@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="description" content="Website with tools to help with Scavenger Hunt 4.">
+		<meta name="keywords" content="scavenger, hunt, 4">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+		<title>The Path of Knowledge</title>
+		<style>
+			body, html {
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+			}
+
+			body {
+				background-color: #8CD8FF;
+				color: black;
+				display: flex;
+				font-family: Arial;
+				overflow: hidden;
+			}
+
+			div.main {
+				background-color: white;
+				border-radius: 2vmax;
+				height: 94%;
+				margin: 3vh 1.5vh;
+			}
+
+			/* Navigation bar styling */
+
+			div#nav {
+				width: 20vw;
+				margin-left: 3vh;
+				text-align: center;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+
+			div#nav > div {
+				background-color: #EAEAEA;
+				width: 80%;
+				overflow-wrap: break-word;
+				overflow: hidden;
+				padding: .7vmax;
+				margin: .7vmax;
+				font-size: 1.5vmax;
+				user-select: none;
+				cursor: pointer;
+				border-radius: 1vmax;
+			}
+
+			div#nav > div.selected {
+				background-color: #DDD;
+			}
+
+			div#nav > div:hover, div#nav > div:focus {
+				animation: btnhover 300ms forwards;
+			}
+
+			@keyframes btnhover {
+				to {
+					background-color: #CCC;
+				}
+			}
+
+			/* Main container stylings */
+
+			div#con {
+				width: 80vw;
+				height: 88%;
+				margin-right: 3vh;
+				padding: 3vh;
+				font-size: 1.5vmax;
+				overflow: scroll;
+			}
+
+			div#con > div {
+				display: none;
+			}
+
+			/* "Submit answers" page stylings */
+
+			input#answer, button#check, p#bubble {
+				font-size: 1vmax;
+				border-radius: .3vmax;
+			}
+
+			input#answer {
+				padding: .5vmax;
+				width: 20%;
+				border: 2px solid black;
+			}
+
+			button#check {
+				padding: .5vmax .7vmax;
+				cursor: pointer;
+				background-color: #5594FA;
+				color: white;
+				border: 2px solid blue;
+			}
+
+			button#check:hover, button#check:focus {
+				animation: btnhover2 300ms forwards;
+			}
+
+			@keyframes btnhover2 {
+				to {
+					background-color: #2c74e8;
+				}
+			}
+
+			p#bubble {
+				opacity: 0;
+				position: relative;
+			}
+
+			@keyframes op1 {
+				to {
+					opacity: 1;
+				}
+			}
+
+			@keyframes op0 {
+				to {
+					opacity: 0;
+				}
+			}
+
+			@keyframes down1 {
+				0% {
+					top: 1vw;
+					color: #000;
+					opacity: 1;
+				}
+
+				50% {
+					color: #F00;
+					opacity: 1;
+				}
+
+				100% {
+					color: #F00;
+					top: 20vw;
+					opacity: 0;
+				}
+			}
+
+			@keyframes down2 {
+				0% {
+					top: 1vw;
+					color: #000;
+					opacity: 1;
+				}
+
+				50% {
+					color: #0B0;
+					opacity: 1;
+				}
+
+				100% {
+					color: #0B0;
+					top: 20vw;
+					opacity: 0;
+				}
+			}
+
+			p#extra {
+				position: relative;
+				top: 20vw;
+			}
+
+			/* "A helpful tool..." page stylings */
+
+			div#tool > p:first-child {
+				margin: 0;
+			}
+
+			div#passrow {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				width: 28vmax;
+			}
+
+			div#passrow > div.passbox {
+				width: 5.1vmax;
+				height: 5.1vmax;
+				background-color: #0077E6;
+				border: .5vmax solid #00529E;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				color: white;
+				font-size: 3.5vmax;
+			}
+
+			@keyframes flashred {
+				0% {
+					background-color: #0077E6;
+					border: .5vmax solid #00529E;
+				}
+
+				10% {
+					background-color: #F00;
+					border: .5vmax solid #900;
+				}
+
+				100% {
+					background-color: #0077E6;
+					border: .5vmax solid #00529E;
+				}
+			}
+
+			@keyframes flashgreen {
+				0% {
+					background-color: #0077E6;
+					border: .5vmax solid #00529E;
+				}
+
+				30% {
+					background-color: #00BD05;
+					border: .5vmax solid #007803;
+				}
+
+				100% {
+					background-color: #0077E6;
+					border: .5vmax solid #00529E;
+				}
+			}
+
+			table#passhint, table#passhint tr {
+				width: 100%;
+			}
+
+			table#passhint td.hintbox {
+				width: 5.75%;
+				height: 4.05vw;
+				background-color: rgb(112, 60, 190);
+				border: .45vmax solid rgb(63, 21, 128);
+				display: inline-flex;
+				justify-content: center;
+				align-items: center;
+				color: white;
+				font-size: 3vmax;
+				margin: .3vmax .45vmax;
+			}
+
+			table#passhint td:not(.hintbox) {
+				padding: 0 1vmax;
+				width: 50%;
+				display: inline-flex;
+			}
+
+			@media (max-width: 699px) {
+				table#passhint td:not(.hintbox) {
+					width: 50%;
+					font-size: 1vmax;
+				}
+			}
+
+			@media (min-width: 700px) {
+				table#passhint td:not(.hintbox) {
+					width: 50%;
+					font-size: 1.5vmax;
+				}
+			}
+
+			@media (min-width: 800px) {
+				table#passhint td:not(.hintbox) {
+					width: 55%;
+					font-size: 1.5vmax;
+				}
+			}
+
+			p#dialloc {
+				display: none;
+			}
+
+			/* "Squares of Knowledge" page stylings */
+
+			div#con.squaresactive {
+				display: flex;
+				justify-content: center;
+				align-content: center;
+				align-items: center;
+			}
+
+			div#squarecon {
+				width: min(25vw, 35vh);
+				height: min(25vw, 35vh);
+				border: max(.5vw, 2px) solid black;
+				transform: rotate(45deg);
+				position: relative;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-family: "Roboto Mono", monospace;
+			}
+			
+			div.square {
+				width: min(14vw, 19.6vh);
+				height: min(14vw, 19.6vh);
+				border: max(.5vw, 2px) solid black;
+				background-color: white;
+				position: absolute;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size: 4vmin;
+			}
+
+			div#square1 {
+				top: calc(min(14vw, 30vh) / -2);
+				left: calc(min(14vw, 30vh) / -2);
+			}
+
+			div#square2 {
+				top: calc(min(14vw, 30vh) / -2);
+				right: calc(min(14vw, 30vh) / -2);
+			}
+
+			div#square3 {
+				bottom: calc(min(14vw, 30vh) / -2);
+				left: calc(min(14vw, 30vh) / -2);
+			}
+
+			div#square4 {
+				bottom: calc(min(14vw, 30vh) / -2);
+				right: calc(min(14vw, 30vh) / -2);
+			}
+
+			div.square > span {
+				transform: rotate(315deg);
+			}
+
+			@keyframes boxanim {
+				to {
+					transform: rotate(405deg);
+				}
+			}
+
+			@keyframes textanim {
+				0% {
+					transform: rotate(315deg);
+					opacity: 0;
+				}
+
+				100% {
+					transform: rotate(-90deg);
+					opacity: 1;
+				}
+			}
+
+			@keyframes wholeconanim {
+				from {
+					transform: rotate(1845deg);
+					width: min(25vw, 35vh);
+					height: min(25vw, 35vh);
+				}
+
+				to {
+					transform: rotate(45deg);
+					width: 0;
+					height: 0;
+					border: 0 solid rgba(0, 0, 0, 0);
+				}
+			}
+
+			p#aftermath {
+				transform: rotate(1755deg);
+				font-size: 4vmin;
+				display: none;
+			}
+
+			@keyframes aftermathanim {
+				to {
+					transform: rotate(315deg);
+				}
+			}
+
+			p#aftermath > span {
+				position: relative;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="main" id="nav">
+			<div tabindex="1">Submit answers</div>
+			<div tabindex="2">A helpful tool...</div>
+			<div tabindex="3">The Squares of Knowledge</div>
+		</div>
+		<div class="main" id="con">
+			<span>Click on an item to open its page.</span>
+
+			<div id="submit">
+				Enter an answer from a square of knowledge riddle.
+				<br>
+				<br>
+				<input id="answer">
+				<button id="check">Check</button>
+				<p id="bubble">bubble</p>
+				<p id="extra"></p>
+			</div>
+			<div id="tool">
+				<p>What is the password? It consists of 4 unique numbers.</p>
+				<p>(Use number keys and delete/backspace on your keyboard to type answer. Click enter to try.)</p><br>
+				<div id="passrow">
+					<div class="passbox"></div>
+					<div class="passbox"></div>
+					<div class="passbox"></div>
+					<div class="passbox"></div>
+				</div><br><br>
+
+				<table id="passhint">
+					<tr>
+						<td class="hintbox">0</td>
+						<td class="hintbox">3</td>
+						<td class="hintbox">4</td>
+						<td class="hintbox">7</td>
+						<td>Three are correct, but in the wrong spot</td>
+					</tr>
+					<tr>
+						<td class="hintbox">5</td>
+						<td class="hintbox">2</td>
+						<td class="hintbox">9</td>
+						<td class="hintbox">4</td>
+						<td><p>One is correct, but in the wrong spot</p></td>
+					</tr>
+					<tr>
+						<td class="hintbox">1</td>
+						<td class="hintbox">9</td>
+						<td class="hintbox">4</td>
+						<td class="hintbox">6</td>
+						<td><p>None are correct</p></td>
+					</tr>
+					<tr>
+						<td class="hintbox">2</td>
+						<td class="hintbox">3</td>
+						<td class="hintbox">8</td>
+						<td class="hintbox">1</td>
+						<td><p>One is correct and in the right spot, and one is correct but in the wrong spot</p></td>
+					</tr>
+					<tr>
+						<td class="hintbox">8</td>
+						<td class="hintbox">5</td>
+						<td class="hintbox">0</td>
+						<td class="hintbox">1</td>
+						<td><p>One is correct and in the right spot</p></td>
+					</tr>
+				</table>
+				<p id="dialloc">Look in the drawers of the master bathroom.</p>
+			</div>
+			<div id="squares">
+				<div id="squarecon">
+					<div class="square" id="square1"><span>?</span></div>
+					<div class="square" id="square2"><span>?</span></div>
+					<div class="square" id="square3"><span>?</span></div>
+					<div class="square" id="square4"><span>?</span></div>
+					<p id="aftermath"><span id='i0'>d</span><span id='i1'>a</span><span id='i2'>n</span><span id='i3'>c</span><span id='i4'>e</span><span id='i5'>d</span><span id='i6'>s</span><span id='i7'>t</span><span id='i8'>r</span><span id='i9'>i</span><span id='i10'>n</span><span id='i11'>g</span><span id='i12'>s</span><span id='i13'>c</span><span id='i14'>o</span><span id='i15'>o</span><span id='i16'>t</span><span id='i17'>l</span><span id='i18'>a</span><span id='i19'>n</span><span id='i20'>c</span><span id='i21'>e</span></p>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		let check = document.getElementById("check");
+		let answer = document.getElementById("answer");
+		let bubble = document.getElementById("bubble");
+
+		let currpage = "";
+		let submitanimationisrunning = false;
+		let currpass = [];
+		let hassolvedtool = false;
+		let revealanimationisrunning = false;
+		let revealanimationisrunning2 = false;
+		let revealedsquares = [false, false, false, false];
+
+		function animatePos(e, dir, places) {
+			let finalpos = 2.4 * places;
+			let animationtimerc = 0;
+			let randtime = Math.round(Math.random() * 400 + 500);
+			dir = dir == "left" ? "right" : "left";
+
+			let animationtimer = setInterval(() => {
+				animationtimerc++;
+
+				e.style[dir] = ((randtime * (Math.sin(Math.PI * (2 * animationtimerc - randtime) / (2 * randtime)) + 1)) / 2 * finalpos / randtime) + "vmin";
+
+				if (animationtimerc == randtime) clearInterval(animationtimer);
+			}, 1);
+		}
+
+		// Switch screens with navbar
+		document.querySelectorAll("div#nav > div").forEach((e, index) => {
+			e.onclick = () => {
+
+				if (document.querySelector("div#con > span")) document.querySelector("div#con > span").remove();
+
+				if (!revealanimationisrunning2) {
+					if (currpage != "") document.querySelector("div#" + currpage).style.display = "none";
+
+					currpage = ["submit", "tool", "squares"][index];
+					document.getElementById("con").classList = "main " + currpage + "active";
+					document.querySelector("div#" + currpage).style.display = "block";
+				}
+
+				if (currpage == "squares") {
+					if (!revealanimationisrunning) {
+						document.querySelectorAll("div.square").forEach((e, index) => {
+							if (revealedsquares[index]) {
+								e.style.animation = "boxanim 4s cubic-bezier(0.3, 0, 0.1, 1) forwards";
+								e.children[0].style.animation = "textanim 4s cubic-bezier(0.3, 0, 0.2, 1) forwards";
+								e.children[0].innerText = ["danced", "scoot", "string", "lance"][index];
+							}
+						});
+
+						if (revealedsquares[0] && revealedsquares[1] && revealedsquares[2] && revealedsquares[3]) {
+							revealanimationisrunning = true;
+							revealanimationisrunning2 = true;
+							setTimeout(() => {
+								let borderfadec = 0;
+								let borderfade = setInterval(() => {
+									borderfadec++;
+									if (borderfadec == 400) {
+										document.querySelectorAll("div.square").forEach(e => {
+											e.style.backgroundColor = "rgba(0, 0, 0, 0)";
+										});
+
+										document.getElementById("squarecon").style.animation = "wholeconanim 8s cubic-bezier(1, 0, 1, 1) forwards";
+										setTimeout(() => {
+											document.querySelectorAll("div.square").forEach(e => {
+												e.style.display = "none";
+											});
+											document.getElementById("aftermath").style.display = "block";
+
+											document.getElementById("aftermath").style.animation = "aftermathanim 4s cubic-bezier(0, 1, 1, 1) forwards";
+											setTimeout(() => {
+												document.getElementById("aftermath").style.animation = "";
+												document.getElementById("squarecon").style.animation = "";
+												setTimeout(() => {
+													document.getElementById("i21").style.animation = "op0 750ms forwards";
+
+													setTimeout(() => {
+														document.getElementById("i21").remove();
+														let dirlist = ["right", "right", "right", "right", "right", "right", "right", "right", "left", "left", "left", "left", "left", "left", "right", "left", "right", "left", "left", "left", "left"];
+														let placeslist = [8, 5, 11, 12, 10, 12, 14, 9, 1, 7, 6, 8, 3, 8, 4, 4, 3, 16, 18, 7, 10];
+
+														setTimeout(() => {
+															document.querySelectorAll("p#aftermath > span").forEach((e, index) => {
+																animatePos(e, dirlist[index], placeslist[index]);
+															});
+
+															setTimeout(() => {
+																revealanimationisrunning2 = false;
+															}, 3750);
+														}, 1000);
+													}, 1000);
+												}, 1000);
+											}, 4000);
+										}, 8000);
+										clearInterval(borderfade);
+									};
+
+									document.querySelectorAll("div#squarecon, div.square").forEach(e => {
+										e.style.borderColor = "rgba(0, 0, 0, " + (1 - borderfadec / 400) + ")";
+									});
+								}, 1);
+							}, 4000);
+						}
+					}
+				} else {
+					// remove all 8 animations
+					if (!revealanimationisrunning2) {
+						document.querySelectorAll("#squarecon > div.square > span").forEach(e => {
+							e.style.animation = "";
+							if (e.tagName == "SPAN") e.innerText = "?";
+						});
+					}
+				}
+			}
+		});
+
+		let checkans = () => {
+			if (!submitanimationisrunning && answer.value != "") {
+				submitanimationisrunning = true;
+				let ans = answer.value.trim().toLowerCase();
+				answer.value = "";
+
+				bubble.innerText = ans;
+				bubble.style.animation = "op1 1.5s forwards";
+
+				if (["danced", "scoot", "string", "lance"].includes(ans)) revealedsquares[["danced", "scoot", "string", "lance"].indexOf(ans)] = true;
+
+				setTimeout(() => {
+					bubble.style.opacity = "1";
+
+					if (["danced", "scoot", "string", "lance"].includes(ans)) {
+						bubble.style.animation = "down2 3s ease-out forwards";
+						if (ans == "danced") {
+							setTimeout(() => {
+								let extramsg = "The unmoving bike sits in rest,<br>waiting for a ride, waiting for a test.<br>In the same room, lies a clue,<br>underneath some cushions, numbered one and two.";
+
+								let typeanimationc = 0;
+								let typeanimation = setInterval(() => {
+									typeanimationc++;
+
+									document.getElementById("extra").innerHTML = extramsg.substr(0, typeanimationc);
+
+									if (typeanimationc == extramsg.length) clearInterval(typeanimation);
+								}, 100);
+							}, 3500);
+						}
+					} else {
+						bubble.style.animation = "down1 3s ease-out forwards";
+					}
+
+					setTimeout(() => {
+						bubble.style.opacity = "0";
+						bubble.style.animation = "";
+						submitanimationisrunning = false;
+					}, 3000);
+				}, 2500);
+			}
+		}
+
+		check.onclick = () => {checkans();}
+
+		window.addEventListener("keydown", e => {
+			if (e.key == "Enter" && currpage == "submit") checkans();
+			if (currpage == "tool") {
+				if ("1234567890".includes(e.key)) {
+					if (currpass.length < 4) {
+						currpass.push(e.key);
+					}
+				} else if (e.key == "Backspace") {
+					if (currpass.length > 0) {
+						currpass.pop();
+					}
+				} else if (e.key == "Enter") {
+					if (currpass.join("") == "2703") {
+						document.querySelectorAll("div.passbox").forEach(e => {
+							e.style.animation = "flashgreen 1.4s";
+							setTimeout(() => {
+								e.style.animation = "";
+							}, 1400);
+						});
+
+						if (!hassolvedtool) {
+							hassolvedtool = true;
+							document.getElementById("dialloc").style.opacity = "0";
+							document.getElementById("dialloc").style.display = "block";
+							document.getElementById("dialloc").style.animation = "op1 2s forwards";
+							setTimeout(() => {
+								document.getElementById("dialloc").style.opacity = "1";
+								document.getElementById("dialloc").style.animation = "";
+							}, 2000);
+						}
+					} else {
+						document.querySelectorAll("div.passbox").forEach(e => {
+							e.style.animation = "flashred 500ms";
+							setTimeout(() => {
+								e.style.animation = "";
+							}, 500);
+						});
+					}
+
+					currpass = [];
+				}
+
+				[0, 1, 2, 3].forEach(e => {
+					if (currpass[e]) {
+						document.getElementsByClassName("passbox")[e].innerText = currpass[e];
+					} else {
+						document.getElementsByClassName("passbox")[e].innerText = "";
+					}
+				});
+			}
+		});
+	</script>
+</html>
